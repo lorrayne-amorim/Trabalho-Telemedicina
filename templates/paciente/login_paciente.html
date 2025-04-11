@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block titulo %}Login Paciente - MedLink{% endblock %}
+
+{% block head_extra %}
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .login-page {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .login-card {
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 450px;
+        padding: 30px;
+    }
+    .login-logo {
+        width: 70px;
+        height: auto;
+        margin-bottom: 20px;
+    }
+    .login-title {
+        color: #50a797;
+        margin-bottom: 30px;
+        font-weight: 600;
+    }
+    .login-btn {
+        background-color: #50a797;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        font-weight: 500;
+        transition: background-color 0.3s;
+    }
+    .login-btn:hover {
+        background-color: #3d8577;
+    }
+</style>
+{% endblock %}
+
+{% block principal %}
+<div class="login-page">
+    <div class="login-card">
+        <div class="text-center mb-4">
+            <img src="/static/img/logo.png" alt="MedLink Logo" class="login-logo">
+            <h2 class="login-title">Login Paciente</h2>
+        </div>
+        
+        {% if erro %}
+        <div class="alert alert-danger mb-4">
+            {{ erro }}
+        </div>
+        {% endif %}
+        
+        <form method="post" action="/login?tipo=paciente">
+            <div class="form-floating mb-3">
+                <input type="email" name="email" id="email" class="form-control" placeholder=" " required>
+                <label for="email">E-mail</label>
+            </div>
+            
+            <div class="form-floating mb-4">
+                <input type="password" name="senha" id="senha" class="form-control" placeholder=" " required>
+                <label for="senha">Senha</label>
+            </div>
+            
+            <div class="mb-3 text-end">
+                <a href="/recuperar-senha" class="text-decoration-none text-secondary">Esqueceu a senha?</a>
+            </div>
+            
+            <button type="submit" class="btn login-btn w-100 mb-3">Entrar</button>
+            
+            <div class="text-center mt-4">
+                <a href="/" class="text-decoration-none text-secondary">
+                    <i class="bi bi-arrow-left"></i> Voltar para página inicial
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

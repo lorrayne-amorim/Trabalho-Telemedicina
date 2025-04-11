@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block titulo %}Erro{% endblock %}
+
+{% block principal %}
+<h1 class="display-6 text-danger">Erro</h1>
+<hr>
+<p class="lead">{{ detail or "Algo deu errado. Tente novamente mais tarde." }}</p>
+<a href="/" class="btn btn-primary">Voltar à Página Inicial</a>
+{% endblock %}

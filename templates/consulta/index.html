@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block titulo %}Consultas{% endblock %}
+
+{% block principal %}
+<div class="d-flex justify-content-between align-items-center">
+    <h1 class="display-6 m-0">Consultas</h1>
+    <a href="/consulta/inserir" class="btn btn-primary">Nova</a>
+</div>
+<hr>
+{% if consultas|length == 0 %}
+<h4>
+    Nenhuma consulta cadastrada.
+</h4>
+{% else %}
+<table class="table table-striped table-sm primeira-centralizada ultima-centralizada">
+    <thead>
+        <tr>
+            <th class="text-bg-dark">Dia</th>
+            <th class="text-bg-dark">Hora</th>
+            <th class="text-bg-dark">Especialidade</th>
+            <th class="text-bg-dark">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in consultas %}
+        <tr>
+            <td>{{ c.dia }}</td>
+            <td>{{ c.hora }}</td>
+            <td>{{ c.especialidadeMed }}</td>
+            <td>
+                <a href="/consulta/alterar/{{c.id}}" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <a href="/consulta/excluir/{{c.id}}" class="btn btn-danger btn-sm">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}

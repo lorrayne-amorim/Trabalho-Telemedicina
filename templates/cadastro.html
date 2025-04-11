@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block titulo %}Cadastro - MedLink{% endblock %}
+
+{% block head_extra %}
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .cadastro-page {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .cadastro-card {
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 550px;
+        padding: 20px;
+    }
+    .cadastro-logo {
+        width: 60px;
+        height: auto;
+        margin-bottom: 10px;
+    }
+    .cadastro-title {
+        color: #50a797;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+    .cadastro-btn {
+        background-color: #50a797;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        font-weight: 500;
+        transition: background-color 0.3s;
+    }
+    .cadastro-btn:hover {
+        background-color: #3d8577;
+    }
+    .tipo-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    .tipo-option {
+        flex: 1;
+        text-align: center;
+        padding: 8px;
+        border-radius: 10px;
+        border: 2px solid #dee2e6;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .tipo-option.active {
+        border-color: #50a797;
+        background-color: rgba(80, 167, 151, 0.1);
+    }
+    .tipo-option i {
+        font-size: 2rem;
+        margin-bottom: 8px;
+        color: #50a797;
+    }
+</style>
+{% endblock %}
+
+{% block principal %}
+<div class="cadastro-page">
+    <div class="cadastro-card">
+        <div class="text-center mb-2">
+            <img src="/static/img/logo.png" alt="MedLink Logo" class="cadastro-logo">
+            <h2 class="cadastro-title">Cadastro</h2>
+        </div>
+        
+        {% if erro %}
+        <div class="alert alert-danger mb-2">
+            {{ erro }}
+        </div>
+        {% endif %}
+        
+        <form method="post" action="/cadastro">
+            <div class="mb-2">
+                <label class="form-label fw-bold">Tipo de cadastro</label>
+                <div class="tipo-container">
+                    <div class="tipo-option active" onclick="selecionarTipo('paciente', this)">
+                        <i class="bi bi-person-fill"></i>
+                        <div>Paciente</div>
+                    </div>
+                    <div class="tipo-option" onclick="selecionarTipo('medico', this)">
+                        <i class="bi bi-clipboard-pulse"></i>
+                        <div>Médico</div>
+                    </div>
+                </div>
+                <input type="hidden" name="tipo" id="tipo" value="paciente">
+            </div>
+            
+            <div class="mb-2">
+                <label for="nome" class="form-label">Nome completo</label>
+                <input type="text" name="nome" id="nome" class="form-control" required>
+            </div>
+            
+            <div class="mb-2">
+                <label for="email" class="form-label">E-mail</label>
+                <input type="email" name="email" id="email" class="form-control" required>
+            </div>
+            
+            <!-- Campo CPF (visível apenas para pacientes) -->
+            <div class="mb-2" id="campo-cpf">
+                <label for="cpf" class="form-label">CPF</label>
+                <input type="text" name="cpf" id="cpf" class="form-control" placeholder="000.000.000-00" required>
+            </div>
+            
+            <!-- Campo CRM (visível apenas para médicos) -->
+            <div class="mb-2" id="campo-crm" style="display: none;">
+                <label for="crm" class="form-label">CRM</label>
+                <input type="text" name="crm" id="crm" class="form-control" placeholder="00000/UF">
+            </div>
+            
+            <div class="mb-2">
+                <label for="senha" class="form-label">Senha</label>
+                <input type="password" name="senha" id="senha" class="form-control" required>
+            </div>
+            
+            <div class="mb-2">
+                <label for="confirmar_senha" class="form-label">Confirmar senha</label>
+                <input type="password" name="confirmar_senha" id="confirmar_senha" class="form-control" required>
+            </div>
+            
+            <button type="submit" class="btn cadastro-btn w-100 mb-3">Cadastrar</button>
+            
+            <div class="text-center mt-4">
+                <p>Já tem uma conta? <a href="/login?tipo=paciente" id="loginLink" class="text-decoration-none fw-bold">Faça login</a></p>
+                <a href="/" class="text-decoration-none text-secondary">
+                    <i class="bi bi-arrow-left"></i> Voltar para página inicial
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    function selecionarTipo(tipo, elemento) {
+        // Atualiza o valor do campo oculto
+        document.getElementById('tipo').value = tipo;
+        
+        // Atualiza o link de login
+        document.getElementById('loginLink').href = `/login?tipo=${tipo}`;
+        
+        // Atualiza a classe visual dos elementos
+        const opcoes = document.querySelectorAll('.tipo-option');
+        opcoes.forEach(opcao => opcao.classList.remove('active'));
+        elemento.classList.add('active');
+        
+        // Mostra/esconde campos específicos de cada tipo
+        if (tipo === 'paciente') {
+            document.getElementById('campo-cpf').style.display = 'block';
+            document.getElementById('campo-crm').style.display = 'none';
+            document.getElementById('cpf').required = true;
+            document.getElementById('crm').required = false;
+        } else {
+            document.getElementById('campo-cpf').style.display = 'none';
+            document.getElementById('campo-crm').style.display = 'block';
+            document.getElementById('cpf').required = false;
+            document.getElementById('crm').required = true;
+        }
+    }
+</script>
+{% endblock %}
+{% endblock %} 

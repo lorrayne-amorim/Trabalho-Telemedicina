@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block titulo %}Alterar Paciente{% endblock %}
+
+{% block principal %}
+<h1 class="display-6">Alterar Paciente</h1>
+<hr>
+<form method="post">
+    <input type="hidden" name="id_paciente" value="{{usuario_alterar.id}}">
+    <div class="form-floating mb-3">
+        <input type="text" name="nome" id="nome" class="form-control" placeholder=" " value="{{usuario_alterar.nome}}">
+        <label for="nome">Nome</label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="email" name="email" id="email" class="form-control" placeholder=" " value="{{usuario_alterar.email}}">
+        <label for="email">E-mail</label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="text" name="cpf" id="cpf" class="form-control" placeholder=" " value="{{usuario_alterar.cpf}}">
+        <label for="cpf">CPF</label>
+    </div>
+    <div>
+        <a href="/paciente" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </div>
+</form>
+{% endblock %}

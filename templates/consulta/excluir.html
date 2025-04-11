@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block titulo %}Excluir Consulta{% endblock %}
+
+{% block principal %}
+<h1 class="display-6">Excluir Consulta</h1>
+<hr>
+<p class="lead">
+    Deseja realmente excluir a consulta marcada para <b>{{consulta.dia}}</b> às <b>{{consulta.hora}}</b> ({{consulta.especialidadeMed}})?
+</p>
+<form method="post">
+    <input type="hidden" name="id_consulta" value="{{consulta.id}}">
+    <div>
+        <a href="/consulta" class="btn btn-success">Não</a>
+        <button type="submit" class="btn btn-danger">Sim</button>
+    </div>
+</form>
+{% endblock %}

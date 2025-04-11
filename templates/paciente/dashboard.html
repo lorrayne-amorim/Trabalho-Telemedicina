@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block titulo %}Dashboard Paciente - MedLink{% endblock %}
+
+{% block head_extra %}
+<style>
+    .welcome-section {
+        background-color: #50a797;
+        color: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .stats-counter {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #50a797;
+    }
+    .stats-label {
+        color: #666;
+        font-weight: 500;
+    }
+    .quick-stats {
+        margin-bottom: 30px;
+    }
+</style>
+{% endblock %}
+
+{% block principal %}
+<div class="welcome-section">
+    <h1 class="h3">Bem-vindo, {{ paciente.nome }}!</h1>
+    <p class="mb-0">Aqui está o resumo dos seus agendamentos e histórico médico.</p>
+</div>
+
+<div class="row quick-stats mb-4">
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center">
+                <div class="stats-counter">2</div>
+                <div class="stats-label">Consultas agendadas</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center">
+                <div class="stats-counter">1</div>
+                <div class="stats-label">Exames pendentes</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center">
+                <div class="stats-counter">3</div>
+                <div class="stats-label">Medicamentos</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center">
+                <div class="stats-counter">15</div>
+                <div class="stats-label">Consultas realizadas</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2 class="h4 mb-4">Menu principal</h2>
+
+<div class="menu-grid">
+    <a href="/paciente/consultas" class="menu-item text-decoration-none">
+        <i class="bi bi-calendar-check"></i>
+        <div>
+            <h3 class="h5 mb-1">Minhas Consultas</h3>
+            <p class="mb-0 text-muted">Agende e gerencie suas consultas</p>
+        </div>
+    </a>
+    
+    <a href="/paciente/historico" class="menu-item text-decoration-none">
+        <i class="bi bi-clipboard2-pulse"></i>
+        <div>
+            <h3 class="h5 mb-1">Histórico Médico</h3>
+            <p class="mb-0 text-muted">Visualize seu histórico de saúde</p>
+        </div>
+    </a>
+    
+    <a href="/paciente/medicamentos" class="menu-item text-decoration-none">
+        <i class="bi bi-capsule"></i>
+        <div>
+            <h3 class="h5 mb-1">Medicamentos</h3>
+            <p class="mb-0 text-muted">Controle suas medicações</p>
+        </div>
+    </a>
+    
+    <a href="/paciente/configuracoes" class="menu-item text-decoration-none">
+        <i class="bi bi-gear"></i>
+        <div>
+            <h3 class="h5 mb-1">Configurações</h3>
+            <p class="mb-0 text-muted">Ajuste suas preferências</p>
+        </div>
+    </a>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom-0 pt-3">
+                <h3 class="h5 mb-0">Próximas consultas</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Dr. Roberto Almeida</strong>
+                            <div class="text-muted small">25/07/2023 - 14:30 - Cardiologia</div>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary me-1">Iniciar</button>
+                            <button class="btn btn-sm btn-outline-secondary">Reagendar</button>
+                        </div>
+                    </li>
+                    <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Dra. Juliana Ribeiro</strong>
+                            <div class="text-muted small">30/07/2023 - 09:15 - Dermatologia</div>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary me-1">Iniciar</button>
+                            <button class="btn btn-sm btn-outline-secondary">Reagendar</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer bg-white border-top-0">
+                <a href="/paciente/consultas" class="text-decoration-none">Ver todas as consultas</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom-0 pt-3">
+                <h3 class="h5 mb-0">Lembretes de medicação</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item px-0">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="bi bi-capsule text-primary fs-4"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <strong>Losartana 50mg</strong>
+                                <div class="text-muted small">1 comprimido pela manhã</div>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="med1">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item px-0">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="bi bi-capsule text-primary fs-4"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <strong>Vitamina D 50.000UI</strong>
+                                <div class="text-muted small">1 comprimido por semana</div>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="med2">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item px-0">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="bi bi-capsule text-primary fs-4"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <strong>Omeprazol 20mg</strong>
+                                <div class="text-muted small">1 comprimido pela manhã em jejum</div>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="med3">
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer bg-white border-top-0">
+                <a href="/paciente/medicamentos" class="text-decoration-none">Ver todos os medicamentos</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

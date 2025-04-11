@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block titulo %}Alterar Consulta{% endblock %}
+
+{% block principal %}
+<h1 class="display-6">Alterar Consulta</h1>
+<hr>
+<form method="post">
+    <input type="hidden" name="id_consulta" value="{{consulta.id}}">
+    <div class="form-floating mb-3">
+        <input type="date" name="dia" id="dia" class="form-control"
+            placeholder=" " value="{{consulta.dia}}" required autofocus>
+        <label for="dia">Dia</label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="time" name="hora" id="hora" class="form-control"
+            placeholder=" " value="{{consulta.hora}}" required>
+        <label for="hora">Hora</label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="text" name="especialidadeMed" id="especialidadeMed" class="form-control"
+            placeholder=" " value="{{consulta.especialidadeMed}}" required>
+        <label for="especialidadeMed">Especialidade Médica</label>
+    </div>
+    <div>
+        <a href="/consulta" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </div>
+</form>
+{% endblock %}

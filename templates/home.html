@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block titulo %}Bem-vindo ao MedLink - Telemedicina{% endblock %}
+
+{% block head_extra %}
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        background-color: #50a797;
+        background-image: url("/static/img/nuvens.svg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        color: white;
+    }
+    .logo-large {
+        width: 100px;
+        height: auto;
+        margin-bottom: 15px;
+    }
+    .app-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .app-subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+        max-width: 600px;
+        text-align: center;
+    }
+    @media (max-width: 768px) {
+        .logo-large {
+            width: 80px;
+        }
+        .app-title {
+            font-size: 2rem;
+        }
+        .app-subtitle {
+            font-size: 1rem;
+            padding: 0 15px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block principal %}
+<div class="user-type-selection">
+    <img src="/static/img/logo.png" alt="MedLink Logo" class="logo-large">
+    <h1 class="app-title">MedLink</h1>
+    <p class="app-subtitle">Plataforma de Telemedicina para conectar médicos e pacientes de forma segura e eficiente</p>
+
+    <div class="selection-buttons">
+        <a href="/login?tipo=medico" class="selection-button">
+            <i class="bi bi-clipboard-pulse"></i>
+            Sou Médico
+        </a>
+        <a href="/login?tipo=paciente" class="selection-button">
+            <i class="bi bi-person"></i>
+            Sou Paciente
+        </a>
+    </div>
+
+    <div class="mt-4 text-center">
+        <span>Não é cadastrado?</span>
+        <a href="/cadastro" class="text-white fw-bold ms-2">Cadastre-se aqui</a>
+    </div>
+</div>
+{% endblock %}
