@@ -1,0 +1,416 @@
+{% extends "base.html" %}
+
+{% block titulo %}Meu Prontuário - MedLink{% endblock %}
+
+{% block head_extra %}
+<style>
+    .prontuario-header {
+        background-color: #50a797;
+        color: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .prontuario-card {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        border: none;
+    }
+    .prontuario-card .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #eee;
+        font-weight: 600;
+    }
+    .info-label {
+        font-weight: 600;
+        color: #555;
+    }
+    .tab-pane {
+        padding: 20px;
+    }
+    .restriction-badge {
+        background-color: #dc3545;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        display: inline-block;
+    }
+    .allergy-badge {
+        background-color: #fd7e14;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        display: inline-block;
+    }
+    .history-item {
+        border-left: 3px solid #50a797;
+        padding-left: 15px;
+        margin-bottom: 15px;
+        position: relative;
+    }
+    .history-date {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+    .history-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    .health-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    .health-progress {
+        flex-grow: 1;
+        margin: 0 15px;
+        height: 10px;
+    }
+    .health-value {
+        font-weight: bold;
+        min-width: 50px;
+        text-align: right;
+    }
+    .medical-icon {
+        font-size: 2.5rem;
+        color: #50a797;
+        margin-bottom: 10px;
+    }
+    .stat-card {
+        border-radius: 15px;
+        background-color: white;
+        padding: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        text-align: center;
+        height: 100%;
+    }
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #50a797;
+        margin: 10px 0;
+    }
+    .action-btn {
+        border-radius: 50px;
+        padding: 8px 20px;
+    }
+</style>
+{% endblock %}
+
+{% block principal %}
+<div class="prontuario-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="h3 mb-0">Meu Prontuário</h1>
+        <div>
+            <button class="btn btn-light action-btn">
+                <i class="bi bi-download me-2"></i>Exportar Dados
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-4">
+        <div class="stat-card">
+            <i class="bi bi-heart-pulse medical-icon"></i>
+            <div class="stat-value">72</div>
+            <div class="text-muted">Batimentos por minuto</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="stat-card">
+            <i class="bi bi-activity medical-icon"></i>
+            <div class="stat-value">120/80</div>
+            <div class="text-muted">Pressão Arterial</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="stat-card">
+            <i class="bi bi-droplet medical-icon"></i>
+            <div class="stat-value">95</div>
+            <div class="text-muted">Glicemia (mg/dL)</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="stat-card">
+            <i class="bi bi-lungs medical-icon"></i>
+            <div class="stat-value">98%</div>
+            <div class="text-muted">Saturação de O₂</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <div class="card prontuario-card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Informações Pessoais</h5>
+            </div>
+            <div class="card-body">
+                <p><span class="info-label">Nome:</span> {{ paciente.nome }}</p>
+                <p><span class="info-label">Data de Nascimento:</span> 10/08/1991 (32 anos)</p>
+                <p><span class="info-label">Tipo Sanguíneo:</span> A+</p>
+                <p><span class="info-label">Altura:</span> 1,65m</p>
+                <p><span class="info-label">Peso:</span> 65kg</p>
+                <p><span class="info-label">IMC:</span> 23,9 (Saudável)</p>
+                
+                <div class="mt-4">
+                    <button class="btn btn-sm btn-outline-primary">Solicitar Atualização</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-8 mb-4">
+        <div class="card prontuario-card">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="medical-history-tab" data-bs-toggle="tab" data-bs-target="#medical-history" type="button" role="tab" aria-controls="medical-history" aria-selected="true">Histórico Médico</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="restrictions-tab" data-bs-toggle="tab" data-bs-target="#restrictions" type="button" role="tab" aria-controls="restrictions" aria-selected="false">Restrições e Alergias</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="family-history-tab" data-bs-toggle="tab" data-bs-target="#family-history" type="button" role="tab" aria-controls="family-history" aria-selected="false">Histórico Familiar</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body p-0">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="medical-history" role="tabpanel" aria-labelledby="medical-history-tab">
+                        <div class="history-item">
+                            <div class="history-date">Maio/2023</div>
+                            <div class="history-title">Cirurgia de Apendicite</div>
+                            <p>Apendicectomia de emergência realizada no Hospital São Lucas. Recuperação normal sem complicações.</p>
+                        </div>
+                        <div class="history-item">
+                            <div class="history-date">Janeiro/2022</div>
+                            <div class="history-title">Hipertensão Arterial</div>
+                            <p>Diagnóstico de hipertensão leve. Iniciado tratamento com Losartana 50mg diariamente.</p>
+                        </div>
+                        <div class="history-item">
+                            <div class="history-date">Março/2020</div>
+                            <div class="history-title">Fratura no Tornozelo</div>
+                            <p>Fratura no tornozelo direito após queda. Tratamento conservador com imobilização por 6 semanas.</p>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="restrictions" role="tabpanel" aria-labelledby="restrictions-tab">
+                        <div class="p-3">
+                            <h5>Restrições</h5>
+                            <div class="mb-3">
+                                <span class="restriction-badge">Limitação Física</span>
+                                <span class="restriction-badge">Atividades de Alto Impacto</span>
+                            </div>
+                            <p>Você deve evitar atividades de alto impacto devido à lesão prévia no tornozelo direito.</p>
+                            
+                            <h5 class="mt-4">Alergias</h5>
+                            <div class="mb-3">
+                                <span class="allergy-badge">Penicilina</span>
+                                <span class="allergy-badge">Crustáceos</span>
+                                <span class="allergy-badge">Sulfas</span>
+                            </div>
+                            <p>Reação grave a penicilina com manifestação de urticária e angioedema. Informe sempre aos profissionais de saúde sobre suas alergias antes de qualquer procedimento ou prescrição.</p>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="family-history" role="tabpanel" aria-labelledby="family-history-tab">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="fw-bold">Pai</div>
+                                <p>Hipertensão, Diabetes tipo 2 (diagnosticado aos 55 anos)</p>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="fw-bold">Mãe</div>
+                                <p>Hipertensão, Hipotireoidismo</p>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="fw-bold">Avô Paterno</div>
+                                <p>Infarto do miocárdio (faleceu aos 68 anos)</p>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="fw-bold">Histórico de doenças na família</div>
+                                <p>Diabetes, Doenças cardiovasculares, Hipertensão</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="card prontuario-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Consultas e Exames</h5>
+                <button class="btn btn-sm btn-outline-primary">Ver Todos</button>
+            </div>
+            <div class="card-body p-0">
+                <table class="table mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Data</th>
+                            <th>Tipo</th>
+                            <th>Médico</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>15/05/2023</td>
+                            <td>Consulta Cardiologia</td>
+                            <td>Dr. Roberto Almeida</td>
+                            <td><span class="badge bg-success">Realizada</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-link">Ver detalhes</button>
+                                <button class="btn btn-sm btn-link">Resultados</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>10/05/2023</td>
+                            <td>Exame de Sangue</td>
+                            <td>Laboratório Central</td>
+                            <td><span class="badge bg-success">Concluído</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-link">Ver resultados</button>
+                                <button class="btn btn-sm btn-link">Compartilhar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>22/03/2023</td>
+                            <td>Consulta Ortopedia</td>
+                            <td>Dra. Juliana Ribeiro</td>
+                            <td><span class="badge bg-success">Realizada</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-link">Ver detalhes</button>
+                                <button class="btn btn-sm btn-link">Prescrições</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>30/07/2023</td>
+                            <td>Consulta Dermatologia</td>
+                            <td>Dr. Carlos Mendes</td>
+                            <td><span class="badge bg-warning">Agendada</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-link">Reagendar</button>
+                                <button class="btn btn-sm btn-link">Cancelar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card prontuario-card">
+            <div class="card-header">
+                <h5 class="mb-0">Medicamentos Atuais</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                    <div class="me-3">
+                        <i class="bi bi-capsule text-primary fs-3"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">Losartana 50mg</h6>
+                        <p class="mb-0 text-muted small">1 comprimido pela manhã</p>
+                    </div>
+                    <div>
+                        <span class="badge bg-info">Contínuo</span>
+                    </div>
+                </div>
+                
+                <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                    <div class="me-3">
+                        <i class="bi bi-capsule text-primary fs-3"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">Vitamina D 50.000UI</h6>
+                        <p class="mb-0 text-muted small">1 comprimido por semana</p>
+                    </div>
+                    <div>
+                        <span class="badge bg-info">Contínuo</span>
+                    </div>
+                </div>
+                
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                        <i class="bi bi-capsule text-primary fs-3"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">Omeprazol 20mg</h6>
+                        <p class="mb-0 text-muted small">1 comprimido pela manhã em jejum</p>
+                    </div>
+                    <div>
+                        <span class="badge bg-warning">Termina em 5 dias</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card prontuario-card">
+            <div class="card-header">
+                <h5 class="mb-0">Vacinas</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div>
+                        <h6 class="mb-1">COVID-19</h6>
+                        <p class="mb-0 text-muted small">Pfizer - 3 doses</p>
+                    </div>
+                    <div>
+                        <span class="badge bg-success">Última dose: 10/01/2023</span>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div>
+                        <h6 class="mb-1">Influenza</h6>
+                        <p class="mb-0 text-muted small">Anual</p>
+                    </div>
+                    <div>
+                        <span class="badge bg-success">Última dose: 15/03/2023</span>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div>
+                        <h6 class="mb-1">Hepatite B</h6>
+                        <p class="mb-0 text-muted small">3 doses</p>
+                    </div>
+                    <div>
+                        <span class="badge bg-success">Completa</span>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">Febre Amarela</h6>
+                        <p class="mb-0 text-muted small">Dose única</p>
+                    </div>
+                    <div>
+                        <span class="badge bg-success">Completa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

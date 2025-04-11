@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+
+{% block titulo %}Prontuários - MedLink{% endblock %}
+
+{% block head_extra %}
+<style>
+    .prontuario-header {
+        background-color: #50a797;
+        color: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .prontuario-card {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        border: none;
+    }
+    .prontuario-card .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #eee;
+        font-weight: 600;
+    }
+    .info-label {
+        font-weight: 600;
+        color: #555;
+    }
+    .tab-pane {
+        padding: 20px;
+    }
+    .patient-card {
+        border-radius: 10px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+        border: none;
+        margin-bottom: 15px;
+    }
+    .patient-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .patient-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #6c757d;
+    }
+    .patient-name {
+        font-weight: 600;
+        color: #343a40;
+        font-size: 1.1rem;
+    }
+    .restriction-badge {
+        background-color: #dc3545;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        display: inline-block;
+    }
+    .allergy-badge {
+        background-color: #fd7e14;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        margin-right: 5px;
+        margin-bottom: 5px;
+        display: inline-block;
+    }
+    .history-item {
+        border-left: 3px solid #50a797;
+        padding-left: 15px;
+        margin-bottom: 15px;
+        position: relative;
+    }
+    .history-date {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+    .history-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    .medical-icon {
+        font-size: 3rem;
+        color: #50a797;
+    }
+</style>
+{% endblock %}
+
+{% block principal %}
+<div class="prontuario-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="h3 mb-0">Prontuários</h1>
+        <div>
+            <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#searchPatientModal">
+                <i class="bi bi-search me-2"></i>Buscar Paciente
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-lg-3 mb-4">
+        <div class="card">
+            <div class="card-header">
+                Pacientes Recentes
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <a href="#" class="list-group-item list-group-item-action active py-3" onclick="showPatientDetails('maria')">
+                        <div class="d-flex align-items-center">
+                            <div class="patient-avatar me-3">MS</div>
+                            <div>
+                                <div class="patient-name">Maria Silva</div>
+                                <small>32 anos - Última consulta: 15/05/2023</small>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action py-3" onclick="showPatientDetails('joao')">
+                        <div class="d-flex align-items-center">
+                            <div class="patient-avatar me-3">JS</div>
+                            <div>
+                                <div class="patient-name">João Santos</div>
+                                <small>45 anos - Última consulta: 03/06/2023</small>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action py-3" onclick="showPatientDetails('ana')">
+                        <div class="d-flex align-items-center">
+                            <div class="patient-avatar me-3">AO</div>
+                            <div>
+                                <div class="patient-name">Ana Oliveira</div>
+                                <small>28 anos - Última consulta: 20/06/2023</small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-9">
+        <!-- Prontuário de Maria Silva -->
+        <div id="prontuario-maria" class="prontuario-details">
+            <div class="card prontuario-card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="h5 mb-0">Informações do Paciente</h3>
+                    <button class="btn btn-sm btn-outline-primary">Editar</button>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><span class="info-label">Nome:</span> Maria Silva</p>
+                            <p><span class="info-label">Data de Nascimento:</span> 10/08/1991 (32 anos)</p>
+                            <p><span class="info-label">Gênero:</span> Feminino</p>
+                            <p><span class="info-label">Tipo Sanguíneo:</span> A+</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><span class="info-label">CPF:</span> 123.456.789-00</p>
+                            <p><span class="info-label">Email:</span> maria.silva@email.com</p>
+                            <p><span class="info-label">Telefone:</span> (11) 98765-4321</p>
+                            <p><span class="info-label">Convênio:</span> Amil (123456789)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card prontuario-card mb-4">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="medical-history-tab" data-bs-toggle="tab" data-bs-target="#medical-history" type="button" role="tab" aria-controls="medical-history" aria-selected="true">Histórico Médico</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="family-history-tab" data-bs-toggle="tab" data-bs-target="#family-history" type="button" role="tab" aria-controls="family-history" aria-selected="false">Histórico Familiar</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="restrictions-tab" data-bs-toggle="tab" data-bs-target="#restrictions" type="button" role="tab" aria-controls="restrictions" aria-selected="false">Restrições e Alergias</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body p-0">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="medical-history" role="tabpanel" aria-labelledby="medical-history-tab">
+                            <div class="history-item">
+                                <div class="history-date">Maio/2023</div>
+                                <div class="history-title">Cirurgia de Apendicite</div>
+                                <p>Paciente foi submetida a uma apendicectomia de emergência. Recuperação normal sem complicações.</p>
+                            </div>
+                            <div class="history-item">
+                                <div class="history-date">Janeiro/2022</div>
+                                <div class="history-title">Hipertensão Arterial</div>
+                                <p>Diagnóstico de hipertensão leve. Iniciado tratamento com Losartana 50mg diariamente.</p>
+                            </div>
+                            <div class="history-item">
+                                <div class="history-date">Março/2020</div>
+                                <div class="history-title">Fratura no Tornozelo</div>
+                                <p>Fratura no tornozelo direito após queda. Tratamento conservador com imobilização por 6 semanas.</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="family-history" role="tabpanel" aria-labelledby="family-history-tab">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <div class="fw-bold">Pai</div>
+                                    <p>Hipertensão, Diabetes tipo 2 (diagnosticado aos 55 anos)</p>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="fw-bold">Mãe</div>
+                                    <p>Hipertensão, Hipotireoidismo</p>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="fw-bold">Avô Paterno</div>
+                                    <p>Infarto do miocárdio (faleceu aos 68 anos)</p>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="fw-bold">Histórico de doenças na família</div>
+                                    <p>Diabetes, Doenças cardiovasculares, Hipertensão</p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-pane fade" id="restrictions" role="tabpanel" aria-labelledby="restrictions-tab">
+                            <div class="p-3">
+                                <h5>Restrições</h5>
+                                <div class="mb-3">
+                                    <span class="restriction-badge">Limitação Física</span>
+                                    <span class="restriction-badge">Atividades de Alto Impacto</span>
+                                </div>
+                                <p>Paciente deve evitar atividades de alto impacto devido a lesão prévia no tornozelo direito.</p>
+                                
+                                <h5 class="mt-4">Alergias</h5>
+                                <div class="mb-3">
+                                    <span class="allergy-badge">Penicilina</span>
+                                    <span class="allergy-badge">Crustáceos</span>
+                                    <span class="allergy-badge">Sulfas</span>
+                                </div>
+                                <p>Reação grave a penicilina com manifestação de urticária e angioedema.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card prontuario-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="h5 mb-0">Consultas e Exames</h3>
+                    <button class="btn btn-sm btn-outline-primary">Ver Todos</button>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Data</th>
+                                <th>Tipo</th>
+                                <th>Profissional</th>
+                                <th>Detalhes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>15/05/2023</td>
+                                <td>Consulta</td>
+                                <td>Dr. Roberto Almeida</td>
+                                <td><a href="#" class="btn btn-sm btn-link">Ver detalhes</a></td>
+                            </tr>
+                            <tr>
+                                <td>10/05/2023</td>
+                                <td>Exame</td>
+                                <td>Laboratório Central</td>
+                                <td><a href="#" class="btn btn-sm btn-link">Ver resultados</a></td>
+                            </tr>
+                            <tr>
+                                <td>22/03/2023</td>
+                                <td>Consulta</td>
+                                <td>Dra. Juliana Ribeiro</td>
+                                <td><a href="#" class="btn btn-sm btn-link">Ver detalhes</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Prontuários de outros pacientes (ocultos inicialmente) -->
+        <div id="prontuario-joao" class="prontuario-details" style="display: none;">
+            <!-- Conteúdo similar para João -->
+            <div class="alert alert-info">
+                Prontuário de João Santos carregado com sucesso.
+            </div>
+        </div>
+        
+        <div id="prontuario-ana" class="prontuario-details" style="display: none;">
+            <!-- Conteúdo similar para Ana -->
+            <div class="alert alert-info">
+                Prontuário de Ana Oliveira carregado com sucesso.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Busca de Pacientes -->
+<div class="modal fade" id="searchPatientModal" tabindex="-1" aria-labelledby="searchPatientModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchPatientModalLabel">Buscar Paciente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-4">
+                    <input type="text" class="form-control" placeholder="Nome, CPF ou e-mail do paciente">
+                    <button class="btn btn-primary" type="button">Buscar</button>
+                </div>
+                
+                <h6 class="mb-3">Resultados da pesquisa</h6>
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action" data-bs-dismiss="modal" onclick="showPatientDetails('maria')">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Maria Silva</h6>
+                            <small>32 anos</small>
+                        </div>
+                        <p class="mb-1">CPF: 123.456.789-00</p>
+                        <small>Email: maria.silva@email.com</small>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action" data-bs-dismiss="modal" onclick="showPatientDetails('joao')">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">João Santos</h6>
+                            <small>45 anos</small>
+                        </div>
+                        <p class="mb-1">CPF: 987.654.321-00</p>
+                        <small>Email: joao.santos@email.com</small>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action" data-bs-dismiss="modal" onclick="showPatientDetails('ana')">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Ana Oliveira</h6>
+                            <small>28 anos</small>
+                        </div>
+                        <p class="mb-1">CPF: 456.789.123-00</p>
+                        <small>Email: ana.oliveira@email.com</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function showPatientDetails(patientId) {
+        // Oculta todos os prontuários
+        document.querySelectorAll('.prontuario-details').forEach(el => {
+            el.style.display = 'none';
+        });
+        
+        // Exibe o prontuário do paciente selecionado
+        document.getElementById('prontuario-' + patientId).style.display = 'block';
+        
+        // Remove a classe active de todos os links
+        document.querySelectorAll('.list-group-item').forEach(el => {
+            el.classList.remove('active');
+        });
+        
+        // Adiciona a classe active ao paciente selecionado
+        const activeLinks = document.querySelectorAll(`.list-group-item[onclick*="${patientId}"]`);
+        activeLinks.forEach(link => {
+            link.classList.add('active');
+        });
+    }
+</script>
+{% endblock %} 

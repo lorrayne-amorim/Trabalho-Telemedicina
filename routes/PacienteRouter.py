@@ -31,3 +31,9 @@ async def post_inserir_paciente(
     paciente = Paciente(nome=nome, email=email, senha=senha, token=token, cpf=cpf)
     PacienteRepo.inserir(paciente)
     return redirecionar_com_mensagem("/paciente", "Paciente cadastrado com sucesso!")
+
+@router.get("/prontuario")
+async def prontuario_paciente(request: Request, usuario: Paciente = Depends(obter_usuario_logado)):
+    if not usuario:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    return templates.TemplateResponse("paciente/prontuario.html", {"request": request, "paciente": usuario})
